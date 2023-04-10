@@ -1,5 +1,9 @@
+// ignore_for_file: avoid_print
+
+import 'package:clima/screens/location_screen.dart';
+import 'package:clima/services/networking.dart';
+import 'package:clima/services/location.dart';
 import 'package:flutter/material.dart';
-import 'package:clima/location.dart';
 
 class LoadingScreen extends StatefulWidget {
   const LoadingScreen({super.key});
@@ -14,8 +18,13 @@ class _LoadingScreenState extends State<LoadingScreen> {
     Location loc = Location();
     await loc.getCurrentLocation();
     if (loc.hasLocation) {
-      print(loc.longitude);
-      print(loc.latitude);
+      String apiKey = "1537c556ea2fdee3b53f5a0092248f65";
+      var url = Uri.parse(
+          'https://api.openweathermap.org/data/2.5/weather?lat=${loc.latitude}&lon=${loc.longitude}&appid=$apiKey');
+
+      NetworkHelper network = NetworkHelper(url);
+      var data = await network.getData();
+      print(data);
     } else {
       print('Unable to retrieve location data');
     }
@@ -29,29 +38,6 @@ class _LoadingScreenState extends State<LoadingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Container(
-          height: 100.0, // set the height
-          width: 100.0, // set the width
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(100.0), // make it round
-          ),
-          child: ElevatedButton(
-            onPressed: () {
-              //Get the current location
-              // getLocation();
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.blue, // set the button color
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(100.0), // make it round
-              ),
-            ),
-            child: const Icon(Icons.location_on, size: 40.0),
-          ),
-        ),
-      ),
-    );
+    return const Scaffold();
   }
 }
