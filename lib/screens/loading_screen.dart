@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:clima/location.dart';
 
 class LoadingScreen extends StatefulWidget {
   const LoadingScreen({super.key});
@@ -11,10 +11,20 @@ class LoadingScreen extends StatefulWidget {
 
 class _LoadingScreenState extends State<LoadingScreen> {
   void getLocation() async {
-    Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.low);
-    // ignore: avoid_print
-    print(position);
+    Location loc = Location();
+    await loc.getCurrentLocation();
+    if (loc.hasLocation) {
+      print(loc.longitude);
+      print(loc.latitude);
+    } else {
+      print('Unable to retrieve location data');
+    }
+  }
+
+  @override
+  void initState() {
+    getLocation();
+    super.initState();
   }
 
   @override
@@ -30,7 +40,7 @@ class _LoadingScreenState extends State<LoadingScreen> {
           child: ElevatedButton(
             onPressed: () {
               //Get the current location
-              getLocation();
+              // getLocation();
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.blue, // set the button color
