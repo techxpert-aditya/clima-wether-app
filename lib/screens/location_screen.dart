@@ -1,8 +1,12 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:clima/utilities/constants.dart';
+import 'dart:convert';
 
 class LocationScreen extends StatefulWidget {
-  const LocationScreen({super.key});
+  const LocationScreen({super.key, this.weatherData});
+  final dynamic weatherData;
 
   @override
   // ignore: library_private_types_in_public_api
@@ -10,13 +14,39 @@ class LocationScreen extends StatefulWidget {
 }
 
 class _LocationScreenState extends State<LocationScreen> {
+  late dynamic temp;
+  late dynamic condition;
+  late dynamic cityName;
+
+  @override
+  void initState() {
+    super.initState();
+
+    String jsonData = widget.weatherData;
+    Map<String, dynamic> data = jsonDecode(jsonData);
+
+    print(data);
+    updateUi(data);
+  }
+
+  void updateUi(weatherData) {
+    temp = weatherData['main']['temp'];
+    condition = weatherData['weather'][0]['id'];
+    cityName = weatherData['name'];
+
+    print(temp);
+    print(condition);
+    print(cityName);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: const AssetImage('images/location_background.jpg'),
+            image: const NetworkImage(
+                'https://raw.githubusercontent.com/londonappbrewery/Clima-Flutter/master/images/location_background.jpg'),
             fit: BoxFit.cover,
             colorFilter: ColorFilter.mode(
                 Colors.white.withOpacity(0.8), BlendMode.dstATop),
