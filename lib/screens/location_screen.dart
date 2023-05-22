@@ -1,8 +1,10 @@
 // ignore_for_file: avoid_print
 
+import 'package:clima/screens/city_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:clima/utilities/constants.dart';
 import 'dart:convert';
+import 'package:clima/services/weather.dart';
 
 class LocationScreen extends StatefulWidget {
   const LocationScreen({super.key, this.weatherData});
@@ -30,7 +32,14 @@ class _LocationScreenState extends State<LocationScreen> {
   }
 
   void updateUi(weatherData) {
-    temp = weatherData['main']['temp'];
+    setState(() {
+      if (weatherData == null) {
+        temp = 0;
+        condition = 1000;
+        cityName = "error";
+      }
+    });
+    temp = weatherData['main']['temp'].round();
     condition = weatherData['weather'][0]['id'];
     cityName = weatherData['name'];
 
@@ -39,71 +48,140 @@ class _LocationScreenState extends State<LocationScreen> {
     print(cityName);
   }
 
+  WeatherModel weatherModelData = WeatherModel();
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: const NetworkImage(
-                'https://raw.githubusercontent.com/londonappbrewery/Clima-Flutter/master/images/location_background.jpg'),
-            fit: BoxFit.cover,
-            colorFilter: ColorFilter.mode(
-                Colors.white.withOpacity(0.8), BlendMode.dstATop),
+    return WillPopScope(
+      onWillPop: () => _showExitDialog(context),
+      child: Scaffold(
+        body: Container(
+          // decoration: BoxDecoration(
+          //   image: DecorationImage(
+          //     image: const NetworkImage(
+          //         'https://raw.githubusercontent.com/londonappbrewery/Clima-Flutter/master/images/location_background.jpg'),
+          //     fit: BoxFit.cover,
+          //     colorFilter: ColorFilter.mode(
+          //         Colors.white.withOpacity(0.8), BlendMode.dstATop),
+          //   ),
+          // ),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Colors.orange[200]!,
+                Colors.orange[400]!,
+              ],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
           ),
-        ),
-        constraints: const BoxConstraints.expand(),
-        child: SafeArea(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  TextButton(
-                    onPressed: () {},
-                    child: const Icon(
-                      Icons.near_me,
-                      size: 50.0,
-                    ),
+          constraints: const BoxConstraints.expand(),
+          child: SafeArea(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(top: 15.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      TextButton(
+                        onPressed: () async {
+                          String jsonData =
+                              await weatherModelData.getLocaitonWeather();
+
+                          Map<String, dynamic> data = jsonDecode(jsonData);
+                          updateUi(data);
+                        },
+                        child: const Icon(
+                          Icons.near_me,
+                          color: Colors.white,
+                          size: 35.0,
+                        ),
+                      ),
+                      Text(
+                        cityName,
+                        style: const TextStyle(
+                          fontSize: 35,
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () async {
+                          var cityName = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const CityScreen()));
+
+                          print("i'm here");
+                          if (cityName != null) {
+                            String jsonData =
+                                await weatherModelData.getCityWeather(cityName);
+                            Map<String, dynamic> data = jsonDecode(jsonData);
+
+                            updateUi(data);
+                          }
+                        },
+                        child: const Icon(
+                          Icons.location_city,
+                          color: Colors.white,
+                          size: 35.0,
+                        ),
+                      ),
+                    ],
                   ),
-                  TextButton(
-                    onPressed: () {},
-                    child: const Icon(
-                      Icons.location_city,
-                      size: 50.0,
-                    ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 15.0),
+                  child: Row(
+                    children: <Widget>[
+                      Text(
+                        '${temp.round()}°',
+                        style: kTempTextStyle,
+                      ),
+                      Text(
+                        weatherModelData.getWeatherIcon(condition),
+                        style: kConditionTextStyle,
+                      ),
+                    ],
                   ),
-                ],
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 15.0),
-                child: Row(
-                  children: const <Widget>[
-                    Text(
-                      '32°',
-                      style: kTempTextStyle,
-                    ),
-                    Text(
-                      '☀️',
-                      style: kConditionTextStyle,
-                    ),
-                  ],
                 ),
-              ),
-              const Padding(
-                padding: EdgeInsets.only(right: 15.0),
-                child: Text(
-                  "It's 🍦 time in San Francisco!",
-                  textAlign: TextAlign.right,
-                  style: kMessageTextStyle,
+                Padding(
+                  padding: const EdgeInsets.only(right: 15.0),
+                  child: Text(
+                    "${weatherModelData.getMessage(temp)} in $cityName!",
+                    textAlign: TextAlign.right,
+                    style: kMessageTextStyle,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
     );
   }
+}
+
+Future<bool> _showExitDialog(BuildContext context) async {
+  return showDialog<bool>(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('Confirm Exit'),
+        content: const Text('Do you want to exit the app?'),
+        actions: <Widget>[
+          TextButton(
+            child: const Text('No'),
+            onPressed: () => Navigator.of(context).pop(false),
+          ),
+          TextButton(
+            child: const Text('Yes'),
+            onPressed: () => Navigator.of(context).pop(true),
+          ),
+        ],
+      );
+    },
+  ).then((value) => value ?? false);
 }

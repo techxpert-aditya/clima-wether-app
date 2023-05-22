@@ -1,7 +1,6 @@
 // ignore_for_file: avoid_print
 import 'package:clima/screens/location_screen.dart';
-import 'package:clima/services/networking.dart';
-import 'package:clima/services/location.dart';
+import 'package:clima/services/weather.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
@@ -15,19 +14,9 @@ class LoadingScreen extends StatefulWidget {
 
 class _LoadingScreenState extends State<LoadingScreen> {
   void getLocation() async {
-    dynamic data;
-    Location loc = Location();
-    await loc.getCurrentLocation();
-    if (loc.hasLocation) {
-      String apiKey = "1537c556ea2fdee3b53f5a0092248f65";
-      var url = Uri.parse(
-          'https://api.openweathermap.org/data/2.5/weather?lat=${loc.latitude}&lon=${loc.longitude}&appid=$apiKey&units=metric');
+    WeatherModel weatherModelData = WeatherModel();
 
-      NetworkHelper network = NetworkHelper(url);
-      data = await network.getData();
-    } else {
-      print('Unable to retrieve location data');
-    }
+    String data = await weatherModelData.getLocaitonWeather();
 
     // ignore: use_build_context_synchronously
     Navigator.push(
@@ -46,10 +35,14 @@ class _LoadingScreenState extends State<LoadingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: SpinKitRipple(
-        color: Colors.white, // set the color of the spinner
-        size: 100.0, // set the size of the spinner
+    return Container(
+      color: const Color.fromARGB(
+          255, 53, 131, 124), // Set the background color to teal
+      child: const Center(
+        child: SpinKitRipple(
+          color: Colors.white, // Set the color of the spinner
+          size: 100.0, // Set the size of the spinner
+        ),
       ),
     );
   }

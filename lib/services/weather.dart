@@ -1,4 +1,39 @@
+// ignore_for_file: avoid_print
+
+import 'package:clima/services/networking.dart';
+import 'package:clima/services/location.dart';
+
 class WeatherModel {
+  String apiKey = "1537c556ea2fdee3b53f5a0092248f65";
+
+  Future<String> getCityWeather(String cityName) async {
+    var url = Uri.parse(
+        'https://api.openweathermap.org/data/2.5/weather?q=$cityName&appid=$apiKey&units=metric');
+
+    NetworkHelper network = NetworkHelper(url);
+    dynamic data = await network.getData();
+
+    return data;
+  }
+
+  Future<String> getLocaitonWeather() async {
+    dynamic data;
+    Location loc = Location();
+    await loc.getCurrentLocation();
+    if (loc.hasLocation) {
+      var url = Uri.parse(
+          'https://api.openweathermap.org/data/2.5/weather?lat=${loc.latitude}&lon=${loc.longitude}&appid=$apiKey&units=metric');
+
+      NetworkHelper network = NetworkHelper(url);
+      data = await network.getData();
+
+      return data;
+    } else {
+      print('Unable to retrieve location data');
+      return 'nothing';
+    }
+  }
+
   String getWeatherIcon(int condition) {
     if (condition < 300) {
       return '🌩';

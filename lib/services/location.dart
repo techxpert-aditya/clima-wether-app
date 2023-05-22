@@ -17,5 +17,6 @@ class Location {
     }
   }
 
+  // ignore: unnecessary_null_comparison
   bool get hasLocation => longitude != null && latitude != null;
 }
