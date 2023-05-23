@@ -63,37 +63,27 @@ class _LocationScreenState extends State<LocationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () => _showExitDialog(context),
-      child: Scaffold(
-        body: Container(
-          // decoration: BoxDecoration(
-          //   image: DecorationImage(
-          //     image: const NetworkImage(
-          //         'https://raw.githubusercontent.com/londonappbrewery/Clima-Flutter/master/images/location_background.jpg'),
-          //     fit: BoxFit.cover,
-          //     colorFilter: ColorFilter.mode(
-          //         Colors.white.withOpacity(0.8), BlendMode.dstATop),
-          //   ),
-          // ),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Colors.blue[200]!,
-                Colors.blue[400]!,
-              ],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            ),
-          ),
-          constraints: const BoxConstraints.expand(),
-          child: SafeArea(
+    return Scaffold(
+      body: Container(
+        // decoration: BoxDecoration(
+        //   image: DecorationImage(
+        //     image: const NetworkImage(
+        //         'https://raw.githubusercontent.com/londonappbrewery/Clima-Flutter/master/images/location_background.jpg'),
+        //     fit: BoxFit.cover,
+        //     colorFilter: ColorFilter.mode(
+        //         Colors.white.withOpacity(0.8), BlendMode.dstATop),
+        //   ),
+        // ),
+        decoration: weatherModelData.getBackgroundGradient(condition),
+        constraints: const BoxConstraints.expand(),
+        child: SafeArea(
+          child: SingleChildScrollView(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                 Padding(
-                  padding: const EdgeInsets.only(top: 15.0),
+                  padding: const EdgeInsets.only(top: 15.0, bottom: 30),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
@@ -143,10 +133,13 @@ class _LocationScreenState extends State<LocationScreen> {
                     ],
                   ),
                 ),
-                Center(
-                  child: Text(
-                    formattedDate,
-                    style: const TextStyle(fontSize: 20),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 75),
+                  child: Center(
+                    child: Text(
+                      formattedDate,
+                      style: const TextStyle(fontSize: 20),
+                    ),
                   ),
                 ),
                 Padding(
@@ -167,7 +160,7 @@ class _LocationScreenState extends State<LocationScreen> {
                       children: [
                         const SizedBox(height: 10),
                         Image.network(
-                            'https://raw.githubusercontent.com/techxpert-aditya/weather-icons/master/sun.png'),
+                            'https://raw.githubusercontent.com/techxpert-aditya/weather-icons/master/${weatherModelData.getWeatherIcon(condition)}.png'),
                         Padding(
                           padding: const EdgeInsets.only(top: 50),
                           child: Row(
@@ -178,11 +171,11 @@ class _LocationScreenState extends State<LocationScreen> {
                                 '${temp.round()}°',
                                 style: kTempTextStyle,
                               ),
-                              const Padding(
-                                padding: EdgeInsets.only(bottom: 8.0),
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 8.0),
                                 child: Text(
-                                  ', Sunny',
-                                  style: TextStyle(
+                                  ' ${weatherModelData.getWeatherConditionName(condition)}',
+                                  style: const TextStyle(
                                     fontSize: 25.00,
                                   ),
                                 ),
@@ -195,7 +188,8 @@ class _LocationScreenState extends State<LocationScreen> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 20, bottom: 50),
+                  padding: const EdgeInsets.only(
+                      top: 20, bottom: 50, left: 50, right: 50),
                   child: Center(
                     child: Text(
                       "${weatherModelData.getMessage(temp)} in $cityName!",
@@ -211,26 +205,4 @@ class _LocationScreenState extends State<LocationScreen> {
       ),
     );
   }
-}
-
-Future<bool> _showExitDialog(BuildContext context) async {
-  return showDialog<bool>(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: const Text('Confirm Exit'),
-        content: const Text('Do you want to exit the app?'),
-        actions: <Widget>[
-          TextButton(
-            child: const Text('No'),
-            onPressed: () => Navigator.of(context).pop(false),
-          ),
-          TextButton(
-            child: const Text('Yes'),
-            onPressed: () => Navigator.of(context).pop(true),
-          ),
-        ],
-      );
-    },
-  ).then((value) => value ?? false);
 }
