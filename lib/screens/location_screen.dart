@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:clima/utilities/constants.dart';
 import 'dart:convert';
 import 'package:clima/services/weather.dart';
+import 'package:intl/intl.dart';
 
 class LocationScreen extends StatefulWidget {
   const LocationScreen({super.key, this.weatherData});
@@ -19,16 +20,26 @@ class _LocationScreenState extends State<LocationScreen> {
   late dynamic temp;
   late dynamic condition;
   late dynamic cityName;
+  String formattedDate = '';
 
   @override
   void initState() {
     super.initState();
+    getCurrentDateTime();
 
     String jsonData = widget.weatherData;
     Map<String, dynamic> data = jsonDecode(jsonData);
 
     print(data);
     updateUi(data);
+  }
+
+  void getCurrentDateTime() {
+    var now = DateTime.now();
+    var formatter = DateFormat('EEEE, MMMM d');
+    formattedDate = formatter.format(now);
+
+    setState(() {});
   }
 
   void updateUi(weatherData) {
@@ -68,8 +79,8 @@ class _LocationScreenState extends State<LocationScreen> {
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
-                Colors.orange[200]!,
-                Colors.orange[400]!,
+                Colors.blue[200]!,
+                Colors.blue[400]!,
               ],
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
@@ -132,27 +143,65 @@ class _LocationScreenState extends State<LocationScreen> {
                     ],
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 15.0),
-                  child: Row(
-                    children: <Widget>[
-                      Text(
-                        '${temp.round()}°',
-                        style: kTempTextStyle,
-                      ),
-                      Text(
-                        weatherModelData.getWeatherIcon(condition),
-                        style: kConditionTextStyle,
-                      ),
-                    ],
+                Center(
+                  child: Text(
+                    formattedDate,
+                    style: const TextStyle(fontSize: 20),
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(right: 15.0),
-                  child: Text(
-                    "${weatherModelData.getMessage(temp)} in $cityName!",
-                    textAlign: TextAlign.right,
-                    style: kMessageTextStyle,
+                  padding: const EdgeInsets.only(
+                      top: 20, bottom: 100, right: 100, left: 100),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.white.withOpacity(0.3), // shadow color
+                          blurRadius: 100, // spread radius
+                          offset:
+                              const Offset(0, 4), // offset in x and y direction
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 10),
+                        Image.network(
+                            'https://raw.githubusercontent.com/techxpert-aditya/weather-icons/master/sun.png'),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 50),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                '${temp.round()}°',
+                                style: kTempTextStyle,
+                              ),
+                              const Padding(
+                                padding: EdgeInsets.only(bottom: 8.0),
+                                child: Text(
+                                  ', Sunny',
+                                  style: TextStyle(
+                                    fontSize: 25.00,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 20, bottom: 50),
+                  child: Center(
+                    child: Text(
+                      "${weatherModelData.getMessage(temp)} in $cityName!",
+                      textAlign: TextAlign.center,
+                      style: kMessageTextStyle,
+                    ),
                   ),
                 ),
               ],

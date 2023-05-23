@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
 const kTempTextStyle = TextStyle(
-  fontSize: 100.0,
+  fontSize: 70.0,
+  fontWeight: FontWeight.w500,
 );
 
 const kMessageTextStyle = TextStyle(
-  fontSize: 70.0,
+  fontSize: 50.0,
+  fontWeight: FontWeight.w100,
 );
 
 const kButtonTextStyle = TextStyle(
