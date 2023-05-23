@@ -11,7 +11,8 @@ const kMessageTextStyle = TextStyle(
 );
 
 const kButtonTextStyle = TextStyle(
-  fontSize: 50.0,
+  fontSize: 30.0,
+  color: Colors.white,
 );
 
 const kConditionTextStyle = TextStyle(
@@ -28,7 +29,7 @@ const ktextFieldDecorationStyle = InputDecoration(
   border: OutlineInputBorder(
     borderRadius: BorderRadius.all(
       Radius.circular(
-        10,
+        100,
       ),
     ),
     borderSide: BorderSide.none,

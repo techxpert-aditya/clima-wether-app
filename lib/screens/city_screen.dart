@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:clima/utilities/constants.dart';
-import 'package:flutter/services.dart';
 
 class CityScreen extends StatefulWidget {
   const CityScreen({super.key});
@@ -16,11 +15,14 @@ class _CityScreenState extends State<CityScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: NetworkImage(
-                'https://raw.githubusercontent.com/londonappbrewery/Clima-Flutter/master/images/city_background.jpg'),
-            fit: BoxFit.cover,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Colors.purple[200]!,
+              Colors.purple[700]!,
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
           ),
         ),
         constraints: const BoxConstraints.expand(),
@@ -39,7 +41,7 @@ class _CityScreenState extends State<CityScreen> {
                 ),
               ),
               Container(
-                padding: const EdgeInsets.all(20.0),
+                padding: const EdgeInsets.all(50.0),
                 child: TextField(
                   style: const TextStyle(color: Colors.black),
                   decoration: ktextFieldDecorationStyle,
