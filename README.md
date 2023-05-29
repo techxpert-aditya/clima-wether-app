@@ -1,5 +1,5 @@
 
-![Logo](https://dev-to-uploads.s3.amazonaws.com/uploads/articles/th5xamgrr6se0x5ro4g6.png)
+![Logo](https://github.com/techxpert-aditya/clima-wether-app/blob/master/images/for-readme/flutterbackground.png)
 
 # CLIMA
 
@@ -14,21 +14,13 @@ CLIMA is a Flutter app that allows users to acquire the current weather informat
 
 ## Screenshots
 
-![Loading Screen](screenshots/loading_screen.png)
-![Home Screen](screenshots/home_screen.png)
-![City Screen](screenshots/city_screen.png)
+<img src="https://github.com/techxpert-aditya/clima-wether-app/blob/master/images/for-readme/app-video.gif" alt="app-recording" width="300" />
 
 ## Technologies Used
 
 - Flutter: A cross-platform framework for building mobile applications.
 - Flutter Networking: Used to make API requests and fetch weather data.
 - Flutter HTTPs: Used to establish secure connections for API requests.
-
-
-## Screenshots
-
-![App Screenshot](https://via.placeholder.com/468x300?text=App+Screenshot+Here)
-
 
 ## Installation
 
